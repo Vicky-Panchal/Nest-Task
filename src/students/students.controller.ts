@@ -10,6 +10,7 @@ import { Body,
          HttpStatus,  
         } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
 
@@ -35,17 +36,17 @@ export class StudentsController {
     }
 
     @Get()
-    findAllStudents(@Query('studentName') studentName: string) {
-        return this.studentsService.find(studentName);
+    findAllStudents(@Query() paginationQuery: PaginationQueryDto) {
+        return this.studentsService.find(paginationQuery);
     }
 
-    @Delete('/:rollNo')
-    removeStudent(@Param('rollNo') rollNo: string) {
-        return this.studentsService.remove(parseInt(rollNo));
+    @Delete('/:aadharID')
+    removeStudent(@Param('aadharID') aadharID: string) {
+        return this.studentsService.remove(aadharID);
     }
 
     @Patch('/:aadharID')
     updateStudent(@Param('aadharID') aadharID: string, @Body() body: UpdateStudentDto) {
-        return this.studentsService.update(parseInt(aadharID), body);
+        return this.studentsService.update(aadharID, body);
     }
 }

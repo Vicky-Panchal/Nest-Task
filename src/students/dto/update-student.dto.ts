@@ -9,9 +9,9 @@ export class UpdateStudentDto {
     @IsOptional()
     schoolName: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    aadharID: number;
+    aadharID: string;
 
     @IsEmail()
     @IsOptional()

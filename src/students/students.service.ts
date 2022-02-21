@@ -2,19 +2,28 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Students } from './entities/students.entity';
-import { exit } from 'process';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 
 @Injectable()
 export class StudentsService {
     constructor(@InjectRepository(Students) private repo: Repository<Students>){}
 
-    async create(studentName: string,schoolName: string, aadharID: number, email: string) {
+    // Create a new student
+    async create(studentName: string,schoolName: string, aadharID: string, email: string) {
+
+        if(aadharID.length !=12){
+            console.log(`AadharID should be of length 12`);
+            return;
+        }
 
         const student = this.repo.create({studentName,schoolName, aadharID, email});
         const aadhar = await this.repo.find({aadharID});
-        if(aadharID === aadhar[0].aadharID)
+
+        // If the student with aadharID already exist then throw error
+        if(aadhar[0])
         {
+            // throw new BadRequestException(`Student is already enrolled in ${aadhar[0].schoolName}`);
             console.log(`Student is already enrolled in ${aadhar[0].schoolName}`);
             return;
         }
@@ -23,35 +32,42 @@ export class StudentsService {
 
     }
 
+    // To find student using its roll number
     findOne(rollNo: number){
 
         return  this.repo.findOne(rollNo);
     }
 
-    find(studentName: string) {
-        return this.repo.find({studentName});
+    // To find the student using any of its attibutes
+    find(paginationQuery: PaginationQueryDto) {
+        return this.repo.find(paginationQuery);
     }
 
-    async update(aadharID: number, attrs: Partial<Students>) {
+    async update(aadharID: string, attrs: Partial<Students>) {
         const aadhar = await this.repo.find({aadharID});
         const student = await this.repo.findOne(aadhar[0].rollNo);
+
+        // If students does not exist then throw error
         if (!student) {
             throw new NotFoundException('Student not found');
         }
         
-        if(aadharID === aadhar[0].aadharID && !(aadharID === student[0].aadharID) )
+        Object.assign(student, attrs);
+        // If the updated aadharID already exist in table then throw error
+        if(student.aadharID != aadharID)
         {
-            console.log(`Student is already enrolled in ${aadhar[0].schoolName}`);
+            throw new BadRequestException(`Please update proper aadhar ID`);
+        }
+        if(student.aadharID.length != 12){
+            console.log(`AadharID should be of length 12`);
             return;
         }
-        Object.assign(student, attrs);
         return this.repo.save(student);
         
     }
 
-    async remove(aadharID: number) {
-        const student = await this.findOne(aadharID);
-
+    async remove(aadharID: string) {
+        const student = await this.repo.find({aadharID});
         if(!student) {
             throw new NotFoundException("Student not found");
         }

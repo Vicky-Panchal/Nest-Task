@@ -7,8 +7,8 @@ export class CreateStudentDto {
     @IsString()
     schoolName: string;
 
-    @IsNumber()
-    aadharID: number;
+    @IsString()
+    aadharID: string;
 
     @IsEmail()
     email: string;
