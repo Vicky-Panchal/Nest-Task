@@ -1,17 +1,17 @@
-import { MaxLength, MinLength } from 'class-validator';
-import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { Schools } from 'src/schools/entities/schools.entity';
+import { Entity,
+         Column,
+         PrimaryGeneratedColumn,
+         ManyToOne,
+         JoinColumn} from 'typeorm';
 
-@Entity()
+@Entity('students')
 export class Students {
     @PrimaryGeneratedColumn()
     rollNo: number;
-    
-    @Column({ nullable: true})
-    schoolName: string;
 
     @Column({ unique: true})
-    @MinLength(12)
-    @MaxLength(12)
     aadharID: string;
 
     @Column()
@@ -19,5 +19,16 @@ export class Students {
 
     @Column()
     email: string;
+
+    @ManyToOne(() => User,{cascade:true, eager:true})
+    @JoinColumn()
+    user: User;
+
+    @Column({unique:false})
+    userId: number;
+    
+    @ManyToOne(() =>  Schools, (schools) => schools.students,{cascade:true,eager: true})
+    @JoinColumn({name: "schoolID", referencedColumnName: "schoolID"})
+    schoolID: Schools;
 
 }

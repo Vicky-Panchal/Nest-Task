@@ -1,12 +1,10 @@
-import { IsEmail, IsString, IsNumber} from 'class-validator';
+import { IsEmail, IsString, IsNumber, Length} from 'class-validator';
 
 export class CreateStudentDto {
     @IsString()
     studentName: string;
-    
-    @IsString()
-    schoolName: string;
 
+    @Length(12,12)
     @IsString()
     aadharID: string;
 

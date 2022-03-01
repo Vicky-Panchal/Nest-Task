@@ -1,14 +1,11 @@
 import { Type } from "class-transformer";
 import { IsOptional } from "class-validator";
 
-export class PaginationQueryDto {
-    @Type(() => String)
-    @IsOptional()
-    studentName: string;
+export class SearchQueryDto {
 
     @Type(() => String)
     @IsOptional()
-    schoolName: string;
+    studentName: string;
 
     @Type(() => String)
     @IsOptional()
@@ -17,4 +14,8 @@ export class PaginationQueryDto {
     @Type(()=> String)
     @IsOptional()
     aadharID: string;
+
+    @Type(()=> Number)
+    @IsOptional()
+    userId: number;
 }
