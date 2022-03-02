@@ -21,14 +21,16 @@ export class Students {
     email: string;
 
     @ManyToOne(() => User,{cascade:true, eager:true})
-    @JoinColumn()
+    @JoinColumn({name:"user_id"})
     user: User;
 
-    @Column({unique:false})
-    userId: number;
+    @Column()
+    user_id: number;
     
     @ManyToOne(() =>  Schools, (schools) => schools.students,{cascade:true,eager: true})
-    @JoinColumn({name: "schoolID", referencedColumnName: "schoolID"})
-    schoolID: Schools;
+    @JoinColumn({name: "school_id", referencedColumnName: "school_id"})
+    schools: Schools;
 
+    @Column()
+    school_id: number
 }

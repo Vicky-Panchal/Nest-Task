@@ -17,5 +17,5 @@ export class SearchQueryDto {
 
     @Type(()=> Number)
     @IsOptional()
-    userId: number;
+    user_id: number;
 }

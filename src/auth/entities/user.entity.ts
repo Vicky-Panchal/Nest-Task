@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Students } from "src/students/entities/students.entity";
 
@@ -16,14 +16,12 @@ export class User extends BaseEntity{
     @Column()
     password: string;
 
-    @Column()
-    salt: string;
-
-    @OneToMany(()=> Students, (students) => students.userId)
+    @OneToMany(()=> Students, (students) => students.user_id)
     students: Students[];
 
     async validatePassowrd(password: string): Promise<boolean> {
-        const hash = await bcrypt.hash(password,this.salt);
-        return hash === this.password;
+
+        const match = await bcrypt.compare(password, this.password);
+        return match;
     }
 }

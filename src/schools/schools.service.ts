@@ -27,14 +27,14 @@ export class SchoolsService {
         }
     }
 
-    async find(searchQuery: SearchQueryDto, user:User){
+    async find(user:User){
 
         const query = this.repo.createQueryBuilder("school");
 
-        query.where("school.userId = :userId", {userId: user.id});
+        query.where("school.user_id = :user_id", {user_id: user.id});
 
-
-        const school = await this.repo.find({where: {searchQuery,userId: user.id}});
+        // await this.repo.find({where: {searchQuery,user_id: user.id}});
+        const school = await query.getMany();
         if(!school)
         {
             throw new NotFoundException("No records found");

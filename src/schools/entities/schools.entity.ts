@@ -12,7 +12,7 @@ import { Entity,
 @Unique(["user"])
 export class Schools {
     @PrimaryGeneratedColumn()
-    schoolID: number;
+    school_id: number;
     
     @Column()
     schoolName: string;
@@ -24,13 +24,13 @@ export class Schools {
     city: string;
 
     @OneToOne(() => User,{cascade:true, eager:true})
-    @JoinColumn()
+    @JoinColumn({name:"user_id"})
     user: User;
 
     @Column()
-    userId: number;
+    user_id: number;
 
-    @OneToMany(()=> Students, (students) => students.schoolID)
+    @OneToMany(()=> Students, (students) => students.school_id)
     students: Students[];
 
 }

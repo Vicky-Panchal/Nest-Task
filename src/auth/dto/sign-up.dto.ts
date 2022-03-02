@@ -1,15 +1,10 @@
-import { IsNumber, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsString, Matches, MaxLength, MinLength } from "class-validator";
 
-export class AuthCredentialsDto {
-
-    @IsNumber()
-    id: number;
-
+export class SignUpDto {
 
     @IsString()
     @MinLength(4)
     @MaxLength(15)
-    @IsOptional()
     username: string;
 
     @IsString()

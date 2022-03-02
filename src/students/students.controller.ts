@@ -7,14 +7,17 @@ import { Body,
          Param,
          Query,
          HttpStatus,
-         UseGuards,  
+         UseGuards,
+         UseInterceptors,  
         } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/auth/entities/user.entity';
 import { GetUser } from 'src/auth/get-user.decorator';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { Schools } from 'src/schools/entities/schools.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { SearchQueryDto } from './dto/search-query.dto';
+import { StudentDto } from './dto/student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
 
@@ -30,12 +33,14 @@ export class StudentsController {
         return this.studentsService.create(body, school, user);
     }
 
+    @UseInterceptors(new SerializeInterceptor(StudentDto))
     @Get('/:rollNo')
     async findStudent(@Param('rollNo') rollNo: string, @GetUser() user: User) {
         const student = await this.studentsService.findOne(parseInt(rollNo),user);
         return student;
     }
 
+    @UseInterceptors(new SerializeInterceptor(StudentDto))
     @Get()
     findAllStudents(@Query() searchQueryDto: SearchQueryDto,@GetUser() user:User) {
         return this.studentsService.find(searchQueryDto,user);

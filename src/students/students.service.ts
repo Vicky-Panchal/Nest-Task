@@ -1,5 +1,5 @@
-import { BadRequestException, Body, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { createQueryBuilder, Repository } from 'typeorm';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Students } from './entities/students.entity';
 import { SearchQueryDto } from './dto/search-query.dto';
@@ -25,9 +25,9 @@ export class StudentsService {
         }
 
         const student = this.repo.create(body);
-        console.log(((await this.repo.find({userId:user.id})).length));
+        console.log(((await this.repo.find({user_id:user.id})).length));
         console.log([].length == 0);
-        if(user.role == "student" && ((await this.repo.find({userId:user.id})).length))
+        if(user.role == "student" && ((await this.repo.find({user_id:user.id})).length))
         {
             throw new BadRequestException("You are already enrolled");
         }
@@ -44,7 +44,7 @@ export class StudentsService {
         
         return {
                 "HTTPStatus code": HttpStatus.CREATED,
-                "Student": student
+                "Student": `New student with name ${student.studentName} is created`
                 }
     }
 
@@ -63,27 +63,16 @@ export class StudentsService {
     // To find the student using any of its attibutes
     async find(searchQueryDto:SearchQueryDto,user: User) {
 
-        const query = this.repo.createQueryBuilder("students");
+        // const query = this.repo.createQueryBuilder("students");
 
-        query.where("students.userId = :userId", {userId: user.id});
-
-        // const student = await query.getMany();
-        // console.log(student);
+        // query.where("students.user_id = :user_id", {user_id: user.id});
         const student = await this.repo.find(searchQueryDto);
-        console.log(student.length);
         for(let i = 0; i<student.length; i++)
         {
-            console.log(student[i]);
-            if(student[i].userId == user.id)
+            
+            if(student[i].user_id != user.id)
             {
-                console.log("inside if condition");
-                delete student[i].user;
-                delete student[i].schoolID.user;
-                continue;
-            }
-            else{
-                console.log("inside else condition");
-                student.splice(i,1);
+                delete student[i];
             }
         }
 
@@ -96,15 +85,14 @@ export class StudentsService {
 
     async update(rollNo: number, attrs: Partial<Students>, user: User) {
 
-        if(attrs.userId != user.id)
+        if(attrs.user_id != undefined && attrs.user_id != user.id )
         {
             throw new BadRequestException("You can't update the user id");
         }
 
-        const og_rollNo = rollNo;
-        const aadhar = await this.repo.find({where:{rollNo, userId: user.id}});
+        const aadhar = await this.repo.find({where:{rollNo, user_id: user.id}});
         rollNo = aadhar[0].rollNo;
-        const student = await this.repo.findOne({where:{rollNo,userId: user.id}});
+        const student = await this.repo.findOne({where:{rollNo,user_id: user.id}});
 
         // If students does not exist then throw error
         if (!student) {
@@ -112,38 +100,44 @@ export class StudentsService {
         }
         
         Object.assign(student, attrs);
-        // If the updated aadharID already exist in table then throw error
-        if(student.rollNo != og_rollNo)
-        {
-            throw new BadRequestException(`Please update proper aadhar ID`);
+
+        try {
+            await this.repo.save(student);
         }
-
-
-
-        await this.repo.save(student);
-        delete student.user;
+        catch(error)
+        {
+            throw new BadRequestException("Aadhar ID already exist in students");
+        }
         return {
-            "HTTPStatus code": HttpStatus.CREATED,
-            "Student": student
+            "HTTPStatus code": HttpStatus.OK,
+            "message": `Student with rollNo ${rollNo} has been updated`
             };
     }
 
     async remove(rollNo: number, user: User) {
-        // [aadharID] = aadharID;
-        const query = this.repo.createQueryBuilder("students");
-        query.where("students.userId = :userId", {userId: user.id});
 
-        const student = await this.repo.find({rollNo});
+        const student = await this.repo.find({where: {rollNo, user_id:user.id}});
         
         if(!student) {
             throw new NotFoundException("Student not found");
         }
 
         await this.repo.remove(student);
-        return {
-            "HTTP Status": HttpStatus.ACCEPTED,
-            "Removed student": student
-        };
+        if(student.length)
+        {
+            return {
+                "HTTP Status": HttpStatus.ACCEPTED,
+                "message": `Student with rollNo ${rollNo} is been removed`
+            };
+        }
+        else
+        {
+            return {
+                "HTTP Status": HttpStatus.UNAUTHORIZED,
+                "message": "You don't have authentication to delete this user"
+            }
+        }
+        
     }
 }
 

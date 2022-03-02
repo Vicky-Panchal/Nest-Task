@@ -14,7 +14,6 @@ export class SchoolsController {
     @Post('addSchool')
     createSchool(@Body() body: CreateSchoolDto, @GetUser() user: User)
     {
-        console.log(user);
         if(user.role == "admin")
         {
             return this.schoolsService.Create(body, user);
@@ -26,10 +25,10 @@ export class SchoolsController {
     }
 
     @Get()
-    async findAllSchools(@Query() searchQuery: SearchQueryDto, @GetUser() user: User){
+    async findAllSchools(@GetUser() user: User){
         if(user.role == "admin")
         {
-            return this.schoolsService.find(searchQuery, user);
+            return this.schoolsService.find(user);
         }
         else{
             throw new UnauthorizedException("Only school admins have access");
