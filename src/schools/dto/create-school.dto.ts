@@ -2,10 +2,10 @@ import { IsEmail, IsString} from 'class-validator';
 
 export class CreateSchoolDto {
     @IsString()
-    schoolName: string;
+    school_name: string;
     
     @IsString()
-    schoolBoard: string;
+    school_board: string;
 
     @IsString()
     city: string;

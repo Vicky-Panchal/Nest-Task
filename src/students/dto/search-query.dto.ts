@@ -5,7 +5,7 @@ export class SearchQueryDto {
 
     @Type(() => String)
     @IsOptional()
-    studentName: string;
+    student_name: string;
 
     @Type(() => String)
     @IsOptional()
@@ -13,7 +13,7 @@ export class SearchQueryDto {
 
     @Type(()=> String)
     @IsOptional()
-    aadharID: string;
+    aadhar_id: string;
 
     @Type(()=> Number)
     @IsOptional()

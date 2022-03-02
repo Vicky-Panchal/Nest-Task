@@ -5,11 +5,11 @@ export class SearchQueryDto {
 
     @Type(() => String)
     @IsOptional()
-    schoolName: string;
+    school_name: string;
 
     @Type(() => String)
     @IsOptional()
-    schoolBoard: string;
+    school_board: string;
 
     @Type(()=> String)
     @IsOptional()

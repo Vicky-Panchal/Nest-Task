@@ -34,9 +34,9 @@ export class StudentsController {
     }
 
     @UseInterceptors(new SerializeInterceptor(StudentDto))
-    @Get('/:rollNo')
-    async findStudent(@Param('rollNo') rollNo: string, @GetUser() user: User) {
-        const student = await this.studentsService.findOne(parseInt(rollNo),user);
+    @Get('/:roll_no')
+    async findStudent(@Param('roll_no') roll_no: string, @GetUser() user: User) {
+        const student = await this.studentsService.findOne(parseInt(roll_no),user);
         return student;
     }
 
@@ -46,13 +46,13 @@ export class StudentsController {
         return this.studentsService.find(searchQueryDto,user);
     }
 
-    @Delete('/:rollNo')
-    removeStudent(@Param('rollNo') rollNo: string, @GetUser() user: User) {
-        return this.studentsService.remove(parseInt(rollNo), user);
+    @Delete('/:roll_no')
+    removeStudent(@Param('roll_no') roll_no: string, @GetUser() user: User) {
+        return this.studentsService.remove(parseInt(roll_no), user);
     }
 
-    @Patch('/:rollNo')
-    updateStudent(@Param('rollNo') rollNo: string, @Body() body: UpdateStudentDto, @GetUser() user: User) {
-        return this.studentsService.update(parseInt(rollNo), body,user);
+    @Patch('/:roll_no')
+    updateStudent(@Param('roll_no') roll_no: string, @Body() body: UpdateStudentDto, @GetUser() user: User) {
+        return this.studentsService.update(parseInt(roll_no), body,user);
     }
 }

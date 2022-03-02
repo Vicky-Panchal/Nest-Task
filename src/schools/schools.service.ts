@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schools } from './entities/schools.entity';
 import { CreateSchoolDto } from './dto/create-school.dto';
-import { SearchQueryDto } from './dto/search-query.dto';
 import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()

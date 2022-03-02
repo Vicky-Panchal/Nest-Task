@@ -2,13 +2,13 @@ import { Expose } from "class-transformer";
 
 export class StudentDto {
     @Expose()
-    rollNo: number;
+    roll_no: number;
 
     @Expose()
-    aadharID: string;
+    aadhar_id: string;
 
     @Expose()
-    studentName: string;
+    student_name: string;
 
     @Expose()
     email: string;

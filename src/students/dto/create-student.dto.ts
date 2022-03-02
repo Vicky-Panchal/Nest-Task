@@ -2,11 +2,11 @@ import { IsEmail, IsString, IsNumber, Length} from 'class-validator';
 
 export class CreateStudentDto {
     @IsString()
-    studentName: string;
+    student_name: string;
 
     @Length(12,12)
     @IsString()
-    aadharID: string;
+    aadhar_id: string;
 
     @IsEmail()
     email: string;

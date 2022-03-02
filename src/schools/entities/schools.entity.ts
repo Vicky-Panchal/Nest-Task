@@ -15,10 +15,10 @@ export class Schools {
     school_id: number;
     
     @Column()
-    schoolName: string;
+    school_name: string;
 
     @Column()
-    schoolBoard: string;
+    school_board: string;
 
     @Column()
     city: string;

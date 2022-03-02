@@ -15,8 +15,8 @@ export class StudentsService {
     // Create a new student
     async create(body: CreateStudentDto, school: Schools, user: User) {
        
-        const aadharID = body.aadharID;
-        const aadhar = await this.repo.find({aadharID});
+        const aadhar_id = body.aadhar_id;
+        const aadhar = await this.repo.find({aadhar_id});
 
         // If the student with aadharID already exist then throw error
         if(aadhar[0])
@@ -44,14 +44,14 @@ export class StudentsService {
         
         return {
                 "HTTPStatus code": HttpStatus.CREATED,
-                "Student": `New student with name ${student.studentName} is created`
+                "Student": `New student with name ${student.student_name} is created`
                 }
     }
 
     // To find student using its roll number
-    async findOne(rollNo: number, user: User){
+    async findOne(roll_no: number, user: User){
 
-        const student = await this.repo.findOne({where: {rollNo,userId: user.id}});
+        const student = await this.repo.findOne({where: {roll_no,userId: user.id}});
         if(!student)
         {
             throw new NotFoundException("Students Not found");
@@ -83,16 +83,16 @@ export class StudentsService {
         return student;
     }
 
-    async update(rollNo: number, attrs: Partial<Students>, user: User) {
+    async update(roll_no: number, attrs: Partial<Students>, user: User) {
 
         if(attrs.user_id != undefined && attrs.user_id != user.id )
         {
             throw new BadRequestException("You can't update the user id");
         }
 
-        const aadhar = await this.repo.find({where:{rollNo, user_id: user.id}});
-        rollNo = aadhar[0].rollNo;
-        const student = await this.repo.findOne({where:{rollNo,user_id: user.id}});
+        const aadhar = await this.repo.find({where:{roll_no, user_id: user.id}});
+        roll_no = aadhar[0].roll_no;
+        const student = await this.repo.findOne({where:{roll_no,user_id: user.id}});
 
         // If students does not exist then throw error
         if (!student) {
@@ -110,13 +110,13 @@ export class StudentsService {
         }
         return {
             "HTTPStatus code": HttpStatus.OK,
-            "message": `Student with rollNo ${rollNo} has been updated`
+            "message": `Student with rollNo ${roll_no} has been updated`
             };
     }
 
-    async remove(rollNo: number, user: User) {
+    async remove(roll_no: number, user: User) {
 
-        const student = await this.repo.find({where: {rollNo, user_id:user.id}});
+        const student = await this.repo.find({where: {roll_no, user_id:user.id}});
         
         if(!student) {
             throw new NotFoundException("Student not found");
@@ -127,7 +127,7 @@ export class StudentsService {
         {
             return {
                 "HTTP Status": HttpStatus.ACCEPTED,
-                "message": `Student with rollNo ${rollNo} is been removed`
+                "message": `Student with rollNo ${roll_no} is been removed`
             };
         }
         else

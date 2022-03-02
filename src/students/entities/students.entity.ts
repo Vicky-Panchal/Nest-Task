@@ -9,13 +9,13 @@ import { Entity,
 @Entity('students')
 export class Students {
     @PrimaryGeneratedColumn()
-    rollNo: number;
+    roll_no: number;
 
     @Column({ unique: true})
-    aadharID: string;
+    aadhar_id: string;
 
     @Column()
-    studentName: string;
+    student_name: string;
 
     @Column()
     email: string;
